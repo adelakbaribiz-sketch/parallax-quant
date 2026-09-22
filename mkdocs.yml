@@ -1,0 +1,22 @@
+site_name: ArbitrageX Engine
+site_description: Multi-strategy crypto arbitrage research and paper-trading engine
+theme:
+  name: material
+  palette:
+    scheme: slate
+    primary: amber
+
+nav:
+  - Home: index.md
+  - Architecture: ARCHITECTURE.md
+  - Strategies: STRATEGIES.md
+  - Risk Management: RISK.md
+  - Compliance: COMPLIANCE.md
+  - Security: SECURITY.md
+  - Deployment: DEPLOYMENT.md
+  - Testing: TESTING.md
+  - Limitations: LIMITATIONS.md
+  - Roadmap: ROADMAP.md
+  - Decisions Log: DECISIONS.md
+
+docs_dir: docs

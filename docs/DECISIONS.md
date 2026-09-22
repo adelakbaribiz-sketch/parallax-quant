@@ -1,0 +1,14 @@
+# Decisions Log
+
+| Decision | Reason |
+|---|---|
+| Refused to implement MEV sandwich attacks | Extracts value from an identifiable other trader's pending transaction rather than capturing a market inefficiency — a harm-to-a-specific-party pattern, not an arbitrage strategy |
+| Compliance module framed explicitly as "not legal compliance" | Writing AML/KYC API hooks doesn't create regulatory compliance; misrepresenting it as such in docs could lead someone to take real investor money without the actual legal structure required |
+| Live trading double-gated (config mode + exact env var) | A single mistake — a YAML typo, a leftover env var from another project — must never be sufficient to place a real order; verified by `tests/test_config.py` |
+| `execution/live_dex.py::submit_flashloan_bundle` raises `NotImplementedError` instead of guessing router/token addresses | A wrong hard-coded address would either fail loudly (acceptable) or, worse, silently succeed against the wrong pool (unacceptable) — raising is the safer failure mode until a real address registry exists |
+| Learning agent: real bandit, PPO/DQN raise `NotImplementedError` | Shipping a fake "PPO agent" that's actually a no-op would be exactly the kind of fabricated completeness this build avoids elsewhere; the bandit is small enough to actually implement correctly in this pass |
+| Strategy allocations validated to sum ≤ 100% (`StrategiesConfig._allocations_within_100`) | The original spec's per-strategy allocation ranges, summed at their maximums, could exceed total capital if configured carelessly — caught at config-load time, not at runtime with real orders in flight |
+| Event-driven backtester reuses the exact `BaseStrategy` interface strategies use live | A separate backtest-only simulation could silently diverge from live behavior; using the same `scan/evaluate/execute/manage_risk` calls means a backtest result actually reflects what the strategy would do |
+| `FlashArbReceiver.sol` written as real, minimal Solidity rather than skipped | Flash-loan arbitrage fundamentally requires an on-chain contract (an EOA can't receive-and-repay atomically) — a Python-only "implementation" would have been fake; writing the actual (unaudited, undeployed) contract and saying so honestly was the alternative to either lying about capability or dropping the strategy entirely |
+| No historical market data bundled | Downloading and licensing historical tick data is outside what this build session could responsibly do (data provider terms, storage volume); the backtester is real and ready, but Phase 1 of the roadmap is explicitly "go get real data and run it" rather than claiming validated backtest results that don't exist |
+| Kubernetes `strategy: Recreate` instead of rolling update | A second live replica of the execution agent would double-execute every strategy decision against the same capital — correctness requirement, not a preference |

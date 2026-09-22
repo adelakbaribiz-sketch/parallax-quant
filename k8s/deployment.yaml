@@ -1,0 +1,64 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: arbitragex-engine
+  namespace: arbitragex
+  labels:
+    app: arbitragex-engine
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate  # a second live replica would double-execute strategies — never run >1 without a distributed lock (docs/ROADMAP.md)
+  selector:
+    matchLabels:
+      app: arbitragex-engine
+  template:
+    metadata:
+      labels:
+        app: arbitragex-engine
+      annotations:
+        prometheus.io/scrape: "true"
+        prometheus.io/port: "9100"
+    spec:
+      containers:
+        - name: engine
+          image: arbitragex-engine:latest
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 9100
+              name: metrics
+          envFrom:
+            - secretRef:
+                name: arbitragex-secrets
+          volumeMounts:
+            - name: config
+              mountPath: /app/config
+              readOnly: true
+          resources:
+            requests:
+              cpu: "250m"
+              memory: "256Mi"
+            limits:
+              cpu: "1000m"
+              memory: "1Gi"
+          readinessProbe:
+            httpGet:
+              path: /metrics
+              port: 9100
+            initialDelaySeconds: 5
+            periodSeconds: 10
+          livenessProbe:
+            httpGet:
+              path: /metrics
+              port: 9100
+            initialDelaySeconds: 15
+            periodSeconds: 20
+      volumes:
+        - name: config
+          configMap:
+            name: arbitragex-config
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: arbitragex

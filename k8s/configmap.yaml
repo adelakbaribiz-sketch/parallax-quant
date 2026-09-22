@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: arbitragex-config
+  namespace: arbitragex
+data:
+  config.yaml: |
+    # Mounted at /app/config/config.yaml — copy config/config.yaml's
+    # contents here for the deployed environment, adjusting
+    # `environment: production` and any per-environment overrides.
+    # Kept as a separate example rather than duplicating the full file
+    # so the two don't silently drift — see docs/DEPLOYMENT.md.
+    environment: production

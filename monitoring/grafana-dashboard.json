@@ -1,0 +1,102 @@
+{
+  "title": "ArbitrageX Engine",
+  "uid": "arbitragex-engine",
+  "timezone": "utc",
+  "schemaVersion": 39,
+  "refresh": "10s",
+  "time": { "from": "now-6h", "to": "now" },
+  "panels": [
+    {
+      "id": 1,
+      "title": "Portfolio Equity (USD)",
+      "type": "timeseries",
+      "gridPos": { "h": 8, "w": 12, "x": 0, "y": 0 },
+      "targets": [{ "expr": "arbitragex_portfolio_equity_usd", "legendFormat": "equity" }]
+    },
+    {
+      "id": 2,
+      "title": "Drawdown (%)",
+      "type": "timeseries",
+      "gridPos": { "h": 8, "w": 12, "x": 12, "y": 0 },
+      "targets": [{ "expr": "arbitragex_portfolio_drawdown_pct", "legendFormat": "drawdown" }]
+    },
+    {
+      "id": 3,
+      "title": "Opportunities Detected / min, by strategy",
+      "type": "timeseries",
+      "gridPos": { "h": 8, "w": 12, "x": 0, "y": 8 },
+      "targets": [
+        {
+          "expr": "sum by (strategy) (rate(arbitragex_opportunities_detected_total[1m])) * 60",
+          "legendFormat": "{{strategy}}"
+        }
+      ]
+    },
+    {
+      "id": 4,
+      "title": "Opportunities Executed / min, by strategy",
+      "type": "timeseries",
+      "gridPos": { "h": 8, "w": 12, "x": 12, "y": 8 },
+      "targets": [
+        {
+          "expr": "sum by (strategy) (rate(arbitragex_opportunities_executed_total[1m])) * 60",
+          "legendFormat": "{{strategy}}"
+        }
+      ]
+    },
+    {
+      "id": 5,
+      "title": "Order Rejections, by reason",
+      "type": "timeseries",
+      "gridPos": { "h": 8, "w": 12, "x": 0, "y": 16 },
+      "targets": [
+        {
+          "expr": "sum by (reason) (rate(arbitragex_orders_rejected_total[5m])) * 300",
+          "legendFormat": "{{reason}}"
+        }
+      ]
+    },
+    {
+      "id": 6,
+      "title": "Order Fill Latency (p50/p95/p99)",
+      "type": "timeseries",
+      "gridPos": { "h": 8, "w": 12, "x": 12, "y": 16 },
+      "targets": [
+        { "expr": "histogram_quantile(0.5, rate(arbitragex_order_fill_latency_seconds_bucket[5m]))", "legendFormat": "p50" },
+        { "expr": "histogram_quantile(0.95, rate(arbitragex_order_fill_latency_seconds_bucket[5m]))", "legendFormat": "p95" },
+        { "expr": "histogram_quantile(0.99, rate(arbitragex_order_fill_latency_seconds_bucket[5m]))", "legendFormat": "p99" }
+      ]
+    },
+    {
+      "id": 7,
+      "title": "Open Positions, by strategy",
+      "type": "timeseries",
+      "gridPos": { "h": 8, "w": 8, "x": 0, "y": 24 },
+      "targets": [{ "expr": "arbitragex_open_positions_count", "legendFormat": "{{strategy}}" }]
+    },
+    {
+      "id": 8,
+      "title": "Margin Utilization (%)",
+      "type": "timeseries",
+      "gridPos": { "h": 8, "w": 8, "x": 8, "y": 24 },
+      "targets": [{ "expr": "arbitragex_margin_utilization_pct", "legendFormat": "{{exchange}} {{symbol}}" }]
+    },
+    {
+      "id": 9,
+      "title": "VaR / CVaR (USD)",
+      "type": "timeseries",
+      "gridPos": { "h": 8, "w": 8, "x": 16, "y": 24 },
+      "targets": [
+        { "expr": "arbitragex_var_usd", "legendFormat": "VaR" },
+        { "expr": "arbitragex_cvar_usd", "legendFormat": "CVaR" }
+      ]
+    },
+    {
+      "id": 10,
+      "title": "Exchange Connection Status",
+      "type": "state-timeline",
+      "gridPos": { "h": 6, "w": 24, "x": 0, "y": 32 },
+      "targets": [{ "expr": "arbitragex_exchange_connection_status", "legendFormat": "{{exchange}}" }]
+    }
+  ]
+}

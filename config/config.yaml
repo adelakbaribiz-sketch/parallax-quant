@@ -1,0 +1,178 @@
+# ArbitrageX Engine — master configuration
+#
+# Every tunable parameter for every strategy, risk limit, and execution
+# setting lives in this one file, validated against src/arbitragex_engine/config.py.
+# An invalid value here fails fast at startup with a precise field path —
+# it never gets silently clamped or ignored.
+#
+# execution.mode defaults to "paper" and MUST stay that way unless you have
+# separately (a) read docs/LIMITATIONS.md and docs/COMPLIANCE.md, and
+# (b) set the ARBITRAGEX_ENABLE_LIVE_TRADING env var — see config.py's
+# is_live_trading_authorized(). Editing this file alone can never enable
+# live trading.
+
+environment: development
+base_currency: USDT
+
+exchanges:
+  - id: binance
+    kind: cex
+    enabled: true
+    api_key_env: BINANCE_API_KEY
+    api_secret_env: BINANCE_API_SECRET
+    sandbox: true
+    rate_limit_requests_per_second: 10
+    rate_limit_burst: 20
+    websocket_reconnect_backoff_base_seconds: 1.0
+    websocket_reconnect_backoff_max_seconds: 60.0
+    withdrawal_enabled: false
+
+  - id: okx
+    kind: cex
+    enabled: true
+    api_key_env: OKX_API_KEY
+    api_secret_env: OKX_API_SECRET
+    sandbox: true
+    rate_limit_requests_per_second: 10
+    rate_limit_burst: 20
+    withdrawal_enabled: false
+
+  - id: kraken
+    kind: cex
+    enabled: true
+    api_key_env: KRAKEN_API_KEY
+    api_secret_env: KRAKEN_API_SECRET
+    sandbox: true
+    rate_limit_requests_per_second: 5
+    rate_limit_burst: 10
+    withdrawal_enabled: false
+
+  - id: ethereum_mainnet
+    kind: dex
+    enabled: true
+    rpc_url_env: ETHEREUM_RPC_URL
+    withdrawal_enabled: true
+
+data:
+  symbols: ["BTC/USDT", "ETH/USDT", "SOL/USDT", "BNB/USDT", "XRP/USDT"]
+  orderbook_depth: 50
+  ntp_server: pool.ntp.org
+  ntp_sync_interval_seconds: 3600
+  max_clock_drift_ms: 250
+  timescaledb_dsn_env: TIMESCALEDB_DSN
+  postgres_dsn_env: POSTGRES_DSN
+  redis_url_env: REDIS_URL
+  hypertable_chunk_interval: "1 day"
+  compression_after: "7 days"
+
+strategies:
+  stat_arb:
+    enabled: true
+    allocation_pct_min: 20
+    allocation_pct_max: 30
+    max_pct_per_pair: 5
+    min_uncorrelated_pairs: 5
+    cointegration_confidence: 0.95
+    engle_granger_max_lag: 10
+    lag_selection_criterion: aic
+    zscore_lookback_periods: 200
+    entry_zscore: 1.5
+    exit_zscore: 0.3
+    stop_loss_sigma: 3.0
+    time_stop_hours: 48
+    chow_test_recheck_interval_hours: 24
+    chow_test_p_value_threshold: 0.05
+    kalman_process_variance_q: 0.00001
+    kalman_observation_variance_r: 0.001
+
+  triangular:
+    enabled: true
+    allocation_pct_min: 10
+    allocation_pct_max: 15
+    max_pct_per_opportunity: 2
+    max_orderbook_depth_consumption_pct: 5
+    min_profit_after_fees_pct: 0.05
+    leg_fill_timeout_ms: 2000
+
+  funding_rate:
+    enabled: true
+    allocation_pct_min: 30
+    allocation_pct_max: 40
+    leverage_min: 2
+    leverage_max: 3
+    safe_margin_distance_pct: 20
+    breakeven_warning_hours: 48
+    funding_rate_check_interval_minutes: 15
+
+  dex_cex_flashloan:
+    enabled: true
+    allocation_pct_min: 10
+    allocation_pct_max: 15
+    protocols: ["aave_v3", "uniswap_v3"]
+    use_flashbots_protect: true
+    max_gas_price_gwei: 150
+    eip1559_priority_fee_gwei: 2
+    min_profit_after_gas_and_fees_usd: 25
+    gas_estimate_safety_margin_pct: 20
+
+risk:
+  max_pct_capital_per_asset: 5
+  max_pct_capital_per_exchange: 10
+  portfolio_max_drawdown_pct: 10
+  correlation_recalc_interval_hours: 24
+  correlation_reduction_threshold: 0.7
+  correlation_weight_reduction_pct: 50
+  var_confidence_level: 0.99
+  var_monte_carlo_paths: 10000
+  var_time_horizon_days: 1
+  margin_alert_utilization_pct: 80
+  margin_check_interval_seconds: 10
+  stress_test_scenarios:
+    - withdrawal_freeze
+    - price_shock_30pct
+    - api_outage
+    - fifty_one_percent_attack
+
+execution:
+  mode: paper  # paper | sandbox | live — see the warning at the top of this file
+  live_trading_confirmation_env: ARBITRAGEX_ENABLE_LIVE_TRADING
+  live_trading_confirmation_value: I_UNDERSTAND_THE_RISK
+  paper_starting_capital_usd: 100000
+  max_slippage_pct: 0.5
+  order_retry_attempts: 3
+  order_retry_backoff_seconds: 0.5
+
+compliance:
+  # Scaffolding only — does NOT constitute legal/regulatory compliance.
+  # See docs/COMPLIANCE.md before taking any real investor capital.
+  aml_kyc_provider: none
+  aml_kyc_api_key_env: AML_KYC_API_KEY
+  suspicious_transaction_usd_threshold: 10000
+  audit_log_retention_days: 2555
+  performance_fee_pct: 20
+  management_fee_pct_annual: 2
+  high_water_mark: true
+
+agents:
+  message_bus:
+    backend: in_memory  # in_memory | rabbitmq | kafka
+    rabbitmq_url_env: RABBITMQ_URL
+    kafka_bootstrap_servers_env: KAFKA_BOOTSTRAP_SERVERS
+  scanner_interval_seconds: 1.0
+  opportunity_min_liquidity_usd: 5000
+  learning_agent_enabled: false  # research-stage — see docs/LIMITATIONS.md
+  learning_agent_algorithm: bandit
+  learning_agent_update_interval_hours: 24
+
+monitoring:
+  prometheus_port: 9100
+  log_level: INFO
+  log_format: json
+
+backtest:
+  historical_data_start: "2024-01-01"
+  historical_data_end: "2026-01-01"
+  slippage_model: orderbook_depth
+  fixed_slippage_bps: 5
+  fee_model: exchange_tiered
+  fixed_fee_bps: 10

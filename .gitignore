@@ -1,0 +1,34 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.eggs/
+build/
+dist/
+.venv/
+venv/
+.mypy_cache/
+.ruff_cache/
+.pytest_cache/
+htmlcov/
+.coverage
+.coverage.*
+
+# Env / secrets — never commit real credentials
+.env
+.env.*
+!.env.example
+k8s/secrets.yaml
+
+# Solidity
+contracts/out/
+contracts/cache/
+contracts/broadcast/
+
+# OS / editor
+.DS_Store
+.vscode/
+.idea/
+
+# Docs build
+site/
