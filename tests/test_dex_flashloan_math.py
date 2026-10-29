@@ -1,6 +1,6 @@
 import pytest
 
-from arbitragex_engine.strategies.dex_cex_flashloan import (
+from parallax_quant.strategies.dex_cex_flashloan import (
     estimate_gas_cost_usd,
     expected_profit_usd,
     flashloan_fee_usd,

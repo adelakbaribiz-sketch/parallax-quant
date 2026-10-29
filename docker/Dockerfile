@@ -23,5 +23,5 @@ USER appuser
 
 EXPOSE 9100
 
-ENTRYPOINT ["python", "-m", "arbitragex_engine.main"]
+ENTRYPOINT ["python", "-m", "parallax_quant.main"]
 CMD ["--config", "config/config.yaml"]

@@ -1,8 +1,8 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: arbitragex-config
-  namespace: arbitragex
+  name: parallax-config
+  namespace: parallax
 data:
   config.yaml: |
     # Mounted at /app/config/config.yaml — copy config/config.yaml's

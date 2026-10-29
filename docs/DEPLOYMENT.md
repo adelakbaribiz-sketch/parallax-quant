@@ -6,7 +6,7 @@
 python -m venv .venv && source .venv/bin/activate
 pip install -e ".[dev]"
 pytest
-python -m arbitragex_engine.main --config config/config.yaml
+python -m parallax_quant.main --config config/config.yaml
 ```
 
 `main.py`'s `build_strategies()` is a documented wiring stub — it logs
@@ -17,10 +17,10 @@ enabled in `config.yaml`):
 
 ```python
 # Example: wiring the funding-rate strategy against paper execution
-from arbitragex_engine.data.cex_feed import CexFeed
-from arbitragex_engine.data.timesync import TimeSync
-from arbitragex_engine.execution.paper import PaperExecutionAdapter
-from arbitragex_engine.strategies.funding_rate import FundingRateArbStrategy
+from parallax_quant.data.cex_feed import CexFeed
+from parallax_quant.data.timesync import TimeSync
+from parallax_quant.execution.paper import PaperExecutionAdapter
+from parallax_quant.strategies.funding_rate import FundingRateArbStrategy
 
 timesync = TimeSync(config.data.ntp_server, config.data.ntp_sync_interval_seconds, config.data.max_clock_drift_ms)
 exchange_cfg = next(e for e in config.exchanges if e.id == "binance")
@@ -65,7 +65,7 @@ actually use the RabbitMQ container instead of the in-process default.
 ## Kubernetes
 
 ```bash
-kubectl apply -f k8s/deployment.yaml   # also creates the arbitragex namespace
+kubectl apply -f k8s/deployment.yaml   # also creates the parallax namespace
 kubectl apply -f k8s/service.yaml
 kubectl apply -f k8s/configmap.yaml
 cp k8s/secrets.example.yaml k8s/secrets.yaml   # fill in real values — DO NOT COMMIT
@@ -96,5 +96,5 @@ first, always):
 
 See the README's "Live trading — explicitly gated" section. Short
 version: `execution.mode: sandbox` (or `live`) in config.yaml, *and*
-`export ARBITRAGEX_ENABLE_LIVE_TRADING=I_UNDERSTAND_THE_RISK`. Both
+`export PARALLAX_ENABLE_LIVE_TRADING=I_UNDERSTAND_THE_RISK`. Both
 required, verified in `tests/test_config.py`.

@@ -1,4 +1,4 @@
-# ArbitrageX Engine
+# Parallax Quant
 
 A modular, multi-strategy crypto arbitrage research and paper-trading
 engine. Start with the repository's root README.md for a quickstart, or

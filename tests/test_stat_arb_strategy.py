@@ -9,9 +9,9 @@ import numpy as np
 import pandas as pd
 import pytest
 
-from arbitragex_engine.config import StatArbConfig
-from arbitragex_engine.strategies.base import SignalDirection
-from arbitragex_engine.strategies.stat_arb import StatArbStrategy
+from parallax_quant.config import StatArbConfig
+from parallax_quant.strategies.base import SignalDirection
+from parallax_quant.strategies.stat_arb import StatArbStrategy
 
 
 class FakePriceSource:
@@ -40,7 +40,7 @@ class FakeExecutionAdapter:
         self.opened = []
 
     async def open_pair_position(self, long_symbol, short_symbol, hedge_ratio, notional_usd):
-        from arbitragex_engine.strategies.base import Position
+        from parallax_quant.strategies.base import Position
 
         pos = Position(
             strategy="stat_arb",
@@ -139,7 +139,7 @@ async def test_manage_risk_closes_on_time_stop(cointegrated_series):
     pair = next(iter(strategy._pairs))
     strategy._pairs[pair].spread_history = [1.0] * 40  # enough history to compute a Z-score
 
-    from arbitragex_engine.strategies.base import Position
+    from parallax_quant.strategies.base import Position
 
     position = Position(
         strategy="stat_arb", symbol="A/USDT/B/USDT", direction=SignalDirection.LONG,
@@ -155,7 +155,7 @@ async def test_manage_risk_unknown_pair_closes_defensively(cointegrated_series):
     strategy = StatArbStrategy(
         config=StatArbConfig(), symbols=["A/USDT", "B/USDT"], price_source=source, execution=FakeExecutionAdapter(), capital_usd=100_000
     )
-    from arbitragex_engine.strategies.base import Position
+    from parallax_quant.strategies.base import Position
 
     position = Position(
         strategy="stat_arb", symbol="X/Y", direction=SignalDirection.LONG,

@@ -1,6 +1,6 @@
 import pytest
 
-from arbitragex_engine.strategies.funding_rate import (
+from parallax_quant.strategies.funding_rate import (
     breakeven_hours,
     expected_funding_income,
     liquidation_price_short,

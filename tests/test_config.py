@@ -1,7 +1,7 @@
 import pytest
 from pydantic import ValidationError
 
-from arbitragex_engine.config import (
+from parallax_quant.config import (
     AppConfig,
     ExecutionConfig,
     ExecutionMode,
@@ -59,24 +59,24 @@ def test_live_trading_not_authorized_by_default(monkeypatch):
 
 
 def test_live_trading_not_authorized_without_env_var(monkeypatch):
-    monkeypatch.delenv("ARBITRAGEX_ENABLE_LIVE_TRADING", raising=False)
+    monkeypatch.delenv("PARALLAX_ENABLE_LIVE_TRADING", raising=False)
     config = AppConfig(execution=ExecutionConfig(mode=ExecutionMode.LIVE))
     assert is_live_trading_authorized(config) is False
 
 
 def test_live_trading_not_authorized_with_wrong_env_value(monkeypatch):
-    monkeypatch.setenv("ARBITRAGEX_ENABLE_LIVE_TRADING", "yes_please")
+    monkeypatch.setenv("PARALLAX_ENABLE_LIVE_TRADING", "yes_please")
     config = AppConfig(execution=ExecutionConfig(mode=ExecutionMode.LIVE))
     assert is_live_trading_authorized(config) is False
 
 
 def test_live_trading_authorized_with_correct_mode_and_env_var(monkeypatch):
-    monkeypatch.setenv("ARBITRAGEX_ENABLE_LIVE_TRADING", "I_UNDERSTAND_THE_RISK")
+    monkeypatch.setenv("PARALLAX_ENABLE_LIVE_TRADING", "I_UNDERSTAND_THE_RISK")
     config = AppConfig(execution=ExecutionConfig(mode=ExecutionMode.LIVE))
     assert is_live_trading_authorized(config) is True
 
 
 def test_sandbox_mode_also_requires_env_var(monkeypatch):
-    monkeypatch.delenv("ARBITRAGEX_ENABLE_LIVE_TRADING", raising=False)
+    monkeypatch.delenv("PARALLAX_ENABLE_LIVE_TRADING", raising=False)
     config = AppConfig(execution=ExecutionConfig(mode=ExecutionMode.SANDBOX))
     assert is_live_trading_authorized(config) is False

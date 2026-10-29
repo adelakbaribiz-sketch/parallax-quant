@@ -1,35 +1,35 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: arbitragex-engine
-  namespace: arbitragex
+  name: parallax-quant
+  namespace: parallax
   labels:
-    app: arbitragex-engine
+    app: parallax-quant
 spec:
   replicas: 1
   strategy:
     type: Recreate  # a second live replica would double-execute strategies — never run >1 without a distributed lock (docs/ROADMAP.md)
   selector:
     matchLabels:
-      app: arbitragex-engine
+      app: parallax-quant
   template:
     metadata:
       labels:
-        app: arbitragex-engine
+        app: parallax-quant
       annotations:
         prometheus.io/scrape: "true"
         prometheus.io/port: "9100"
     spec:
       containers:
         - name: engine
-          image: arbitragex-engine:latest
+          image: parallax-quant:latest
           imagePullPolicy: IfNotPresent
           ports:
             - containerPort: 9100
               name: metrics
           envFrom:
             - secretRef:
-                name: arbitragex-secrets
+                name: parallax-secrets
           volumeMounts:
             - name: config
               mountPath: /app/config
@@ -56,9 +56,9 @@ spec:
       volumes:
         - name: config
           configMap:
-            name: arbitragex-config
+            name: parallax-config
 ---
 apiVersion: v1
 kind: Namespace
 metadata:
-  name: arbitragex
+  name: parallax

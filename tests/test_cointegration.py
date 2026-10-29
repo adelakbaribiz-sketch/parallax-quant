@@ -2,7 +2,7 @@ import numpy as np
 import pandas as pd
 import pytest
 
-from arbitragex_engine.strategies.cointegration import (
+from parallax_quant.strategies.cointegration import (
     chow_test,
     engle_granger_test,
     is_stationary,

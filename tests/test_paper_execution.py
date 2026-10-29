@@ -1,7 +1,7 @@
 import pytest
 
-from arbitragex_engine.data.models import OrderBook, OrderBookLevel
-from arbitragex_engine.execution.paper import PaperExecutionAdapter
+from parallax_quant.data.models import OrderBook, OrderBookLevel
+from parallax_quant.execution.paper import PaperExecutionAdapter
 
 
 class FakeOrderBookProvider:

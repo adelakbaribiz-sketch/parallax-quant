@@ -51,7 +51,7 @@ matters is exchange API key scoping:
 
 Real order placement requires *both* `execution.mode` in config.yaml to
 be `sandbox`/`live` *and* the exact environment variable
-`ARBITRAGEX_ENABLE_LIVE_TRADING=I_UNDERSTAND_THE_RISK`. This
+`PARALLAX_ENABLE_LIVE_TRADING=I_UNDERSTAND_THE_RISK`. This
 belt-and-braces design means a single mistake (a YAML typo, or an env
 var left over from a different project) cannot alone enable real trading
 — verified in `tests/test_config.py`.
