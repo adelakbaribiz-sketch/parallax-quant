@@ -2,7 +2,7 @@ import math
 
 import pytest
 
-from arbitragex_engine.strategies.graph import RateGraph
+from parallax_quant.strategies.graph import RateGraph
 
 
 def test_no_cycle_when_rates_are_consistent():

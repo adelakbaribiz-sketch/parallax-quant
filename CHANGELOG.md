@@ -1,5 +1,28 @@
 # Changelog
 
+## [0.2.0] — Parallax Quant
+
+### Changed
+- Renamed the project from ArbitrageX Engine to **Parallax Quant**: package
+  `arbitragex_engine` → `parallax_quant`, distribution `parallax-quant`,
+  live-trading env var `ARBITRAGEX_ENABLE_LIVE_TRADING` →
+  `PARALLAX_ENABLE_LIVE_TRADING`, Prometheus metric prefix `arbitragex_` →
+  `parallax_`, Kubernetes namespace `arbitragex` → `parallax`.
+  **Breaking** for anyone importing the old package, setting the old env var,
+  or alerting on the old metric names.
+
+### Added
+- `parallax_quant.dashboard`: local read-only research console (dark theme)
+  that renders the real strategy/risk output on a seeded synthetic market;
+  `parallax` and `parallax-console` console scripts.
+- README screenshots under `docs/screenshots/`.
+
+### Fixed
+- `TriangularArbStrategy._max_size_within_depth_limit` compared leg depth
+  budgets in different currencies (e.g. ETH vs USDT), which could size a
+  USDT-start cycle at ~0.6 instead of ~2,000. Each leg is now converted to the
+  cycle's start currency before taking the minimum.
+
 ## [0.1.0] — Initial build
 
 ### Added

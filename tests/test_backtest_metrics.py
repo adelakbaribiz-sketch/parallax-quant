@@ -2,7 +2,7 @@ import numpy as np
 import pandas as pd
 import pytest
 
-from arbitragex_engine.backtest.metrics import (
+from parallax_quant.backtest.metrics import (
     compute_all_metrics,
     max_drawdown_pct,
     profit_factor,

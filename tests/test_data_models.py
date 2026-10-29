@@ -1,6 +1,6 @@
 import pytest
 
-from arbitragex_engine.data.models import OrderBook, OrderBookLevel, Tick
+from parallax_quant.data.models import OrderBook, OrderBookLevel, Tick
 
 
 def test_tick_mid_and_spread_bps():

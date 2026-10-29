@@ -2,7 +2,7 @@ import time
 
 import pytest
 
-from arbitragex_engine.data.ratelimit import ExponentialBackoff, TokenBucket
+from parallax_quant.data.ratelimit import ExponentialBackoff, TokenBucket
 
 
 @pytest.mark.asyncio

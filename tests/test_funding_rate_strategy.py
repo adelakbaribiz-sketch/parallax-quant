@@ -4,10 +4,10 @@ import time
 
 import pytest
 
-from arbitragex_engine.config import FundingRateArbConfig
-from arbitragex_engine.data.models import FundingRate
-from arbitragex_engine.strategies.base import Position, SignalDirection
-from arbitragex_engine.strategies.funding_rate import FundingRateArbStrategy
+from parallax_quant.config import FundingRateArbConfig
+from parallax_quant.data.models import FundingRate
+from parallax_quant.strategies.base import Position, SignalDirection
+from parallax_quant.strategies.funding_rate import FundingRateArbStrategy
 
 
 class FakeFundingSource:

@@ -1,7 +1,7 @@
 import pytest
 
-from arbitragex_engine.risk.stress_test import run_stress_tests
-from arbitragex_engine.strategies.base import Position, SignalDirection
+from parallax_quant.risk.stress_test import run_stress_tests
+from parallax_quant.strategies.base import Position, SignalDirection
 
 
 def make_position(notional, chain=None):
@@ -48,7 +48,7 @@ def test_unknown_scenario_raises():
 
 
 def test_all_configured_scenarios_are_registered():
-    from arbitragex_engine.config import RiskConfig
+    from parallax_quant.config import RiskConfig
 
     default_scenarios = RiskConfig().stress_test_scenarios
     # Should not raise for any scenario the default config declares

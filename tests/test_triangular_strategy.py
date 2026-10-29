@@ -5,9 +5,9 @@ import time
 
 import pytest
 
-from arbitragex_engine.config import TriangularArbConfig
-from arbitragex_engine.data.models import OrderBook, OrderBookLevel
-from arbitragex_engine.strategies.triangular import LegFill, TriangularArbStrategy
+from parallax_quant.config import TriangularArbConfig
+from parallax_quant.data.models import OrderBook, OrderBookLevel
+from parallax_quant.strategies.triangular import LegFill, TriangularArbStrategy
 
 
 class FakeOrderBookSource:
@@ -159,7 +159,7 @@ async def test_execute_returns_none_when_first_leg_never_fills(profitable_triang
 
 @pytest.mark.asyncio
 async def test_manage_risk_always_returns_true(profitable_triangle_books):
-    from arbitragex_engine.strategies.base import Position, SignalDirection
+    from parallax_quant.strategies.base import Position, SignalDirection
 
     strategy = TriangularArbStrategy(
         config=TriangularArbConfig(),
@@ -175,3 +175,30 @@ async def test_manage_risk_always_returns_true(profitable_triangle_books):
         notional_usd=1000, entry_price=1.0, opened_at=time.time(), metadata={},
     )
     assert await strategy.manage_risk(position) is True
+
+
+@pytest.mark.asyncio
+async def test_depth_limit_compares_legs_in_the_start_currency():
+    # USDT -> ETH -> SOL -> USDT. The ETH/SOL book is quoted in ETH, so its
+    # depth budget must be converted back to USDT before being compared
+    # with the USDT-quoted legs — a 13.5 SOL budget is ~2,000 USDT, not 0.63.
+    books = {
+        "USDT/ETH": OrderBook(exchange="x", symbol="USDT/ETH", bids=(), asks=(OrderBookLevel(price=3000.0, volume=100.0),), timestamp=0),
+        "ETH/SOL": OrderBook(exchange="x", symbol="ETH/SOL", bids=(), asks=(OrderBookLevel(price=0.05, volume=2000.0),), timestamp=0),
+        "SOL/USDT": OrderBook(exchange="x", symbol="SOL/USDT", bids=(), asks=(OrderBookLevel(price=1 / 150, volume=1_000_000.0),), timestamp=0),
+    }
+    strategy = TriangularArbStrategy(
+        config=TriangularArbConfig(max_orderbook_depth_consumption_pct=5.0),
+        exchange="x",
+        currencies=["USDT", "ETH", "SOL"],
+        orderbook_source=FakeOrderBookSource(books),
+        execution=FakeLegExecutionAdapter(),
+        capital_usd=100_000,
+        taker_fee_pct=0.0,
+    )
+    await strategy.refresh_order_books()
+    # Leg budgets (5% of top volume), converted to USDT:
+    #   USDT/ETH: 5 ETH * 3000             = 15,000 USDT
+    #   ETH/SOL:  100 SOL * 0.05 = 5 ETH   = 15,000 USDT
+    #   SOL/USDT: 50,000 USDT * 1/150 SOL  = 50,000 USDT
+    assert strategy._max_size_within_depth_limit(["USDT", "ETH", "SOL", "USDT"]) == pytest.approx(15_000.0)

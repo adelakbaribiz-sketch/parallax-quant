@@ -1,6 +1,6 @@
 import numpy as np
 
-from arbitragex_engine.risk.var import monte_carlo_var
+from parallax_quant.risk.var import monte_carlo_var
 
 
 def test_var_increases_with_confidence_level():

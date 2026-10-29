@@ -1,13 +1,13 @@
-# ArbitrageX Engine — master configuration
+# Parallax Quant — master configuration
 #
 # Every tunable parameter for every strategy, risk limit, and execution
-# setting lives in this one file, validated against src/arbitragex_engine/config.py.
+# setting lives in this one file, validated against src/parallax_quant/config.py.
 # An invalid value here fails fast at startup with a precise field path —
 # it never gets silently clamped or ignored.
 #
 # execution.mode defaults to "paper" and MUST stay that way unless you have
 # separately (a) read docs/LIMITATIONS.md and docs/COMPLIANCE.md, and
-# (b) set the ARBITRAGEX_ENABLE_LIVE_TRADING env var — see config.py's
+# (b) set the PARALLAX_ENABLE_LIVE_TRADING env var — see config.py's
 # is_live_trading_authorized(). Editing this file alone can never enable
 # live trading.
 
@@ -135,7 +135,7 @@ risk:
 
 execution:
   mode: paper  # paper | sandbox | live — see the warning at the top of this file
-  live_trading_confirmation_env: ARBITRAGEX_ENABLE_LIVE_TRADING
+  live_trading_confirmation_env: PARALLAX_ENABLE_LIVE_TRADING
   live_trading_confirmation_value: I_UNDERSTAND_THE_RISK
   paper_starting_capital_usd: 100000
   max_slippage_pct: 0.5

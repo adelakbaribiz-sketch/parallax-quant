@@ -1,5 +1,5 @@
-from arbitragex_engine.config import RiskConfig
-from arbitragex_engine.risk.position_limits import check_drawdown, check_position_size
+from parallax_quant.config import RiskConfig
+from parallax_quant.risk.position_limits import check_drawdown, check_position_size
 
 
 def make_config(**overrides):

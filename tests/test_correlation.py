@@ -2,7 +2,7 @@ import numpy as np
 import pandas as pd
 import pytest
 
-from arbitragex_engine.risk.correlation import (
+from parallax_quant.risk.correlation import (
     compute_correlation_matrix,
     effective_independent_count,
     find_correlated_pairs,

@@ -1,6 +1,6 @@
 import pytest
 
-from arbitragex_engine.agents.learning_agent import LearningAgent
+from parallax_quant.agents.learning_agent import LearningAgent
 
 
 def test_bandit_converges_toward_higher_reward_arm():

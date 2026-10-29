@@ -1,6 +1,6 @@
 import numpy as np
 
-from arbitragex_engine.strategies.kalman import KalmanHedgeRatio
+from parallax_quant.strategies.kalman import KalmanHedgeRatio
 
 
 def test_kalman_converges_to_true_static_beta():

@@ -1,7 +1,7 @@
 [project]
-name = "arbitragex-engine"
-version = "0.1.0"
-description = "Multi-strategy crypto arbitrage research and paper-trading engine"
+name = "parallax-quant"
+version = "0.2.0"
+description = "Parallax Quant: multi-strategy crypto arbitrage research and paper-trading engine with a local research console"
 requires-python = ">=3.11"
 readme = "README.md"
 license = { text = "MIT" }
@@ -25,6 +25,10 @@ dependencies = [
     "tenacity>=8.3.0",
 ]
 
+[project.scripts]
+parallax = "parallax_quant.main:main"
+parallax-console = "parallax_quant.dashboard.server:main"
+
 [project.optional-dependencies]
 dev = [
     "pytest>=8.2.0",
@@ -45,10 +49,13 @@ build-backend = "setuptools.build_meta"
 [tool.setuptools.packages.find]
 where = ["src"]
 
+[tool.setuptools.package-data]
+"parallax_quant.dashboard" = ["static/*"]
+
 [tool.pytest.ini_options]
 asyncio_mode = "auto"
 testpaths = ["tests"]
-addopts = "--cov=arbitragex_engine --cov-report=term-missing"
+addopts = "--cov=parallax_quant --cov-report=term-missing"
 
 [tool.ruff]
 line-length = 110
